@@ -269,11 +269,11 @@ def check_icon(size, color=(30, 190, 100)):
 
 # ---------------------------------------------------------------- per-car scene
 CARS = {
-    "aruz": dict(num="01", name="PERODUA ARUZ", sub="Ruang untuk keperluan\nperjalanan keluarga."),
+    "aruz": dict(num="01", name="PERODUA ARUZ", sub="Jom tengok ruang boot\n3 model ni!"),
     "ativa": dict(num="02", name="PERODUA ATIVA", sub="Praktikal untuk\nperjalanan anda.",
                   liters=(303, 369), count=(3.0, 4.2),
                   cam=[(0, .5, .5, 1.0, 0), (2.5, .5, .62, 1.35, 0), (6.5, .6, .6, 1.25, 3)]),
-    "bezza": dict(num="03", name="PERODUA BEZZA", sub="Ruang but luas untuk\nbarang keperluan anda.",
+    "bezza": dict(num="03", name="PERODUA BEZZA", sub="Ruang boot luas untuk\nbarang keperluan anda.",
                   liters=(508,), count=(3.0, 4.2),
                   cam=[(0, .5, .6, 1.0, 0), (2.5, .46, .7, 1.45, 0), (6.5, .56, .68, 1.3, -3)]),
 }
@@ -346,10 +346,8 @@ def scene_aruz(tau):
     # arrow between
     if tau >= 5.3:
         paste_scaled(frame, emoji("➡️", 90), W / 2, 1330, pop(tau, 5.3) * (1 + .1 * math.sin(tau * 10)))
-    funny_sticker(frame, tau, 7.0, W / 2 - 40, 1415)
     tag = text_sticker("● " + ("WIDE" if tau < 2.5 else "CLOSE-UP" if tau < 6.5 else "SIDE ANGLE"), 26, fg=WHITE,
                        bg=(0, 0, 0, 150), pad=(16, 8), radius=14, shadow=False, fpath=FONT_B)
-    paste_scaled(frame, tag, W - 60 - tag.width / 2, 545, alpha=clamp(tau * 3))
     header_and_sub(frame, cfg, tau)
     return frame
 
@@ -366,19 +364,17 @@ def scene_car(key, tau):
     paste_scaled(frame, card, W / 2, CARD_CY, scale=0.6 + 0.4 * p_in, rot=rot, alpha=clamp(p_in * 1.5))
     shot = "WIDE" if tau < 2.5 else ("CLOSE-UP" if tau < 6.5 else "SIDE ANGLE")
     tag = text_sticker("● " + shot, 26, fg=WHITE, bg=(0, 0, 0, 150), pad=(16, 8), radius=14, shadow=False, fpath=FONT_B)
-    paste_scaled(frame, tag, 150 + tag.width / 2, CARD_CY - CARD_H / 2 + 50, alpha=clamp(p_in))
     # liter count-up
     win = cfg["count"]
     if tau >= win[0]:
         vals = [count_val(v, tau, win) for v in cfg["liters"]]
         txt = " - ".join(str(v) for v in vals) + "L"
         bump = 1 + .2 * math.exp(-(tau - win[1]) * 10) if tau >= win[1] else 1
-        lab = text_sticker("RUANG BUT", 34, fg=WHITE, bg=RED, pad=(18, 8), radius=14)
+        lab = text_sticker("RUANG BOOT", 34, fg=WHITE, bg=RED, pad=(18, 8), radius=14)
         y = CARD_CY + CARD_H / 2 - 40
         paste_scaled(frame, lab, W / 2, y - 95, pop(tau, win[0], .25))
         paste_scaled(frame, liter_badge(txt, 140 if len(cfg["liters"]) == 1 else 118), W / 2, y,
                      bump * pop(tau, win[0], .25))
-    funny_sticker(frame, tau, 5.5, W - 300, CARD_CY - CARD_H / 2 + 40)
     header_and_sub(frame, cfg, tau)
     return frame
 
@@ -647,7 +643,6 @@ def synth_audio(path):
         while x < b:
             add(tick(), x, 1.0); x += .07
         add(ding(2093), b, .9)
-    for base, t0 in ((4, 7.0), (13, 5.5), (22, 5.5)): add(ding(1568), base + t0, .5)
     for a in (4, 13, 22, 31, 36):
         add(riser(), a - .9, .8); add(whoosh(), a - .1, .8)
     add(impact(), 34.0, .8); add(impact(), 36.0, .6)
